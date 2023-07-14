@@ -1,0 +1,1 @@
+# aws-tf-serving-pattern
