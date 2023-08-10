@@ -1,6 +1,6 @@
 # demo-svhn-classifier
 
-TL;DR: Tensorflow2 offers roughly 3 code styles of model implementation: Sequential, Functional and Subclassing. This project utilizes first style for implementing [SVHN dataset](http://ufldl.stanford.edu/housenumbers/) image classifier, whose level of abstraction is highest among the three. 
+TL;DR: Tensorflow2 offers roughly 3 code styles of model implementation: Sequential, Functional and Subclassing. This project utilizes first style to implement [SVHN dataset](http://ufldl.stanford.edu/housenumbers/) image classifier, whose level of abstraction is highest among the three. Scroll down to [environment](#environment) section to try out Streamlit demo of implemented image classifiers.
 
 --- 
 
@@ -21,10 +21,16 @@ conda activate svhn
 
 ### Execute
 
-To train and save models, execute `main.py` script. Series of logs provided by custom logger and Tensorflow will be displayed on console during the implemented process. Trained model will be saved in directory specified in `LOCAL_DIR` variable of the script.
+For sake of users who want to try out this demo, two different pretrained models and corresponding CSV files of logs generated during training process are saved in my S3 repository. By executing `main.py` script using `remote` command, those objects can be downloaded from that repository, and you are ready to go.
 
 ```shell
-python main.py
+python main.py remote
+```
+
+Or, to train and save models in local machine, execute `main.py` script using `local` command. Either way, trained models and history files will be saved in directory specified in `LOCAL_DIR` variable of the main script.
+
+```shell
+python main.py local
 ```
 
 To try out trained models, execute Streamlit demo as following.

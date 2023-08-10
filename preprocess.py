@@ -1,8 +1,39 @@
 import requests
 import pathlib
 import numpy as np
+
 from scipy.io import loadmat
 from typing import Tuple
+from zipfile import ZipFile
+
+
+def download_pretrained_model(url_prefix: str, local_dir: pathlib.Path, model_type: str):
+    """
+    download pretrained model and corresponding training log from S3 bucket
+    :param url_prefix: configured S3 path prefix
+    :param local_dir: configured local directory
+    :param model_type: one of 'mlp' or 'cnn'
+    :return: None
+    """
+    model_dir = local_dir.joinpath(model_type)
+    model_dir.mkdir(exist_ok=True, parents=True)
+    for file_name in ("model.zip", "training_log.csv"):
+        source_url = f"{url_prefix}/{model_type}/{file_name}"
+        response = requests.get(source_url)
+        with open(f"{model_dir}/{file_name}", "wb") as file:
+            file.write(response.content)
+
+
+def unzip_downloaded_model(local_dir: pathlib.Path, model_type: str):
+    """
+    when pretrained model is downloaded from S3 bucket, it is in .zip format so unzip it
+    :param local_dir: configured local directory
+    :param model_type: one of 'mlp' or 'cnn'
+    :return: None
+    """
+    model_dir = local_dir.joinpath(model_type)
+    with ZipFile(model_dir.joinpath("model.zip"), "r") as file:
+        file.extractall(model_dir)
 
 
 def download_data(source_url: str, file_name: str, local_dir: pathlib.Path):
