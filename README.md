@@ -19,7 +19,9 @@ conda env create
 conda activate svhn
 ```
 
-### Execute
+There are two ways to prepare objects required two run the demo script.
+
+### 1. Download from S3 (recommended)
 
 For sake of users who want to try out this demo, two different pretrained models and corresponding CSV files of logs generated during training process are saved in my S3 repository. By executing `main.py` script using `remote` command, those objects can be downloaded from that repository, and you are ready to go.
 
@@ -27,11 +29,15 @@ For sake of users who want to try out this demo, two different pretrained models
 python main.py remote
 ```
 
-Or, to train and save models in local machine, execute `main.py` script using `local` command. Either way, trained models and history files will be saved in directory specified in `LOCAL_DIR` variable of the main script.
+### 2. Run training script in local environment
+
+Optionally, to train and save models in local machine, execute `main.py` script using `local` command. Either way, trained models and history files will be saved in directory specified in `LOCAL_DIR` variable of the main script.
 
 ```shell
 python main.py local
 ```
+
+## Execute
 
 To try out trained models, execute Streamlit demo as following.
 
