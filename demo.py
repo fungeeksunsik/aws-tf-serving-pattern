@@ -33,7 +33,10 @@ def load_cnn_train_history() -> pd.DataFrame:
 
 @st.cache_data
 def load_test_data() -> Tuple[np.array, np.array]:
-    return preprocess.load_data(TEST_DATA_NAME, local_dir)
+    images, labels = preprocess.load_data(TEST_DATA_NAME, local_dir)
+    images = preprocess.reshape_data(images)
+    labels = labels.flatten()
+    return images, labels
 
 
 @st.cache_data
@@ -73,7 +76,45 @@ def get_cnn_model_summary_path(_model: tf.keras.Model) -> str:
     return summary_path
 
 
-# load objects
+tf.config.set_visible_devices([], 'GPU')  # prevent 'CHECK failed: target + size == res' error in M2 mac
 mlp_model = load_pretrained_mlp_model()
 cnn_model = load_pretrained_cnn_model()
-test_data = load_test_data()
+images, labels = load_test_data()
+st.title("Pretrained Image Classifiers Demo")
+
+if st.sidebar.button("Refresh"):
+    random_index = np.random.randint(0, images.shape[0])
+    sample_image = images[random_index]
+    text_column, sample_image_column = st.columns(spec=[0.85, 0.15])
+    with text_column:
+        """
+        As displayed example, each image in SVHN dataset consists of 32x32 shaped RGB image with corresponding label 
+        ranges from 0 to 9. Each of classifier will preprocess image, and pass the image into the model to calculate
+        softmax values for each label. Decision rule is to pick lable whose predicted soft value is highest compared to 
+        others.
+        """
+    with sample_image_column:
+        st.image(sample_image, caption=f"label : {labels[random_index]}")
+    grayscaled_image = preprocess.convert_to_grayscale(sample_image)
+
+    st.header("MLP Model Prediction Result")
+    grayscaled_image = grayscaled_image[np.newaxis, :, :]
+    mlp_scores = mlp_model.predict(grayscaled_image, verbose=0)[0]
+    mlp_prediction = np.argmax(mlp_scores)
+    if mlp_prediction == labels[random_index]:
+        st.success(f"Prediction result of MLP model is correct(label: {mlp_prediction})", icon="✅")
+    else:
+        st.warning(f"MLP model failed to give correct prediction(label: {mlp_prediction})", icon="⚠️")
+    st.bar_chart(pd.DataFrame({"softmax scores(MLP)": mlp_scores}))
+
+    st.header("CNN Model Prediction Result")
+    grayscaled_image = grayscaled_image[:, :, :, np.newaxis]
+    cnn_scores = cnn_model.predict(grayscaled_image, verbose=0)[0]
+    cnn_prediction = np.argmax(cnn_scores)
+    if cnn_prediction == labels[random_index]:
+        st.success(f"Prediction result of CNN model is correct(label: {cnn_prediction})", icon="✅")
+    else:
+        st.warning(f"CNN model failed to give correct prediction(label: {cnn_prediction})", icon="⚠️")
+    st.bar_chart(pd.DataFrame({"softmax scores(CNN)": cnn_scores}))
+else:
+    st.text("Click `Refresh` button on the sidebar")

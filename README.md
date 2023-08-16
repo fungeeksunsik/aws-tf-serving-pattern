@@ -2,6 +2,8 @@
 
 TL;DR: Tensorflow2 offers roughly 3 code styles of model implementation: Sequential, Functional and Subclassing. This project utilizes first style to implement [SVHN dataset](http://ufldl.stanford.edu/housenumbers/) image classifier, whose level of abstraction is highest among the three. Scroll down to [environment](#environment) section to try out Streamlit demo of implemented image classifiers.
 
+![thumbnail](https://raw.githubusercontent.com/sunsikim/demo-svhn-classifier/master/thumbnail.png "Main page of SVHN classifier demo")
+
 --- 
 
 In any frameworks, high-level API sacrifices flexibility for implementation and makes overall code black-box if components are not well understood. However, purpose of it is to reduce amount of code implementation and therefore controlling overall system complexity. 
